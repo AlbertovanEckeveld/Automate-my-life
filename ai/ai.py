@@ -81,6 +81,7 @@ class OllamaAssistant:
 
     def handle_request(self, user_input: str) -> Dict[str, Any]:
         intent = self.query_intent_and_action(user_input)
+        print(intent)
         calendar = CalendarService()
         request = calendar.handle_calendar_request(intent)
 
