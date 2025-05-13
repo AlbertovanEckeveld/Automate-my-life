@@ -9,7 +9,8 @@ from google_services.calendar import CalendarService
 from ai.contexts.main_agent_systemPrompt import response_json_format
 from ai.contexts.main_agent_systemPrompt import query_intent_action_systemPrompt
 
-# Config
+load_dotenv()
+
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
 MODEL_NAME = os.getenv("MODEL_NAME")
 CONTEXT_FILE = os.getenv("CONTEXT_FILE")
