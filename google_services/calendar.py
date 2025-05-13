@@ -94,3 +94,19 @@ class CalendarService:
             return calendar_list.get('items', [])
         except Exception as e:
             raise Exception(f"Failed to fetch calendar list: {str(e)}")
+
+    def handle_calendar_request(self, intent: Dict[str, str]) -> Dict[str, Any]:
+        if intent["action"] == "create_calendar_event":
+            try:
+                event = self.create_event(
+                    summary=intent["title"],
+                    start_time=datetime.fromisoformat(intent["start_time"]),
+                    end_time=datetime.fromisoformat(intent["end_time"]),
+                    description=intent.get("description"),
+                    location=intent.get("location"),
+                    attendees=intent.get("attendees", [])
+                )
+                return {"status": "success", "event": event}
+            except Exception as e:
+                print(f"Error creating event: {str(e)}")
+                return {"status": "error", "message": str(e)}

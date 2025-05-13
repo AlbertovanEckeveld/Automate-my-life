@@ -1,7 +1,4 @@
-from datetime import datetime
-
 from ai.ai import OllamaAssistant
-from google_services.calendar import CalendarService
 
 def main():
     assistant = OllamaAssistant()
@@ -11,12 +8,12 @@ def main():
         if query.lower() == 'quit':
             break
 
-        response = assistant.handle_request(query)
-        print("AI Response:", response.get("ai_response"))
+        print(assistant.handle_request(query)["ai_response"])
 
 
 if __name__ == "__main__":
-    calendar2 = CalendarService()
+    main()
+#    calendar2 = CalendarService()
 #    print(calendar2.create_event(
 #        summary="Test Event",
 #        start_time=datetime(2025, 5, 15, 10, 0),
