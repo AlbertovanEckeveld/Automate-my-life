@@ -10,6 +10,13 @@ class CalendarService:
     def create_event(self, summary: str, start_time: datetime, end_time: datetime,
                      description: str = None, location: str = None, attendees: List[str] = None,
                      timezone: str = 'UTC+2') -> Dict[str, Any]:
+
+        # Controleer op conflicten
+        existing_events = self.get_events(time_min=start_time, time_max=end_time)
+        if existing_events:
+            event_summaries = ", ".join([event['summary'] for event in existing_events])
+            raise Exception(f"Error: er staat al iets gepland op dat tijdstip: {event_summaries}")
+        
         event = {
             'summary': summary,
             'location': location,
@@ -110,3 +117,28 @@ class CalendarService:
             except Exception as e:
                 print(f"Error creating event: {str(e)}")
                 return {"status": "error", "message": str(e)}
+
+
+#    calendar2 = CalendarService()
+#    print(calendar2.create_event(
+#        summary="Test Event",
+#        start_time=datetime(2025, 5, 15, 10, 0),
+#        end_time=datetime(2025, 5, 15, 11, 0),
+#        description="This is a test event",
+#        location="123 Test St, Test City, TX",
+#        attendees=["eckeveld@outlook.com"]
+#    ))
+#    print(calendar2.get_events(
+#        time_min=datetime(2025, 5, 15, 0, 0),
+#        time_max=datetime(2025, 5, 16, 0, 0),
+#        query="Test"
+#    ))
+
+#    print(calendar2.update_event(
+#        event_id="3ph9vbdkbp4939f42httfvnsb4",
+#        updated_data={
+#            'summary': 'Updated Event',
+#            'description': 'Updated description'
+#        }
+#    ))
+#    print(calendar2.delete_event(event_id="3ph9vbdkbp4939f42httfvnsb4"))

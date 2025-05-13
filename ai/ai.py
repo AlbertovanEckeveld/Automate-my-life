@@ -1,17 +1,18 @@
-import requests
+import os
 import json
+import requests
 from typing import Dict, Any
+from dotenv import load_dotenv
 from google_services.google_api import get_calendar_service, get_gmail_service
 
 from google_services.calendar import CalendarService
-from ai.contexts.main_agent_systemPrompt import query_intent_action_systemPrompt
 from ai.contexts.main_agent_systemPrompt import response_json_format
+from ai.contexts.main_agent_systemPrompt import query_intent_action_systemPrompt
 
 # Config
-OLLAMA_BASE_URL = "http://100.88.24.228:11434"
-MODEL_NAME = "qwen2.5:14b"
-CONTEXT_FILE = "../../context_window.json"
-
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
+MODEL_NAME = os.getenv("MODEL_NAME")
+CONTEXT_FILE = os.getenv("CONTEXT_FILE")
 
 class OllamaAssistant:
     def __init__(self):
