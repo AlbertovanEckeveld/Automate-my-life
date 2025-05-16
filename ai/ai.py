@@ -3,8 +3,8 @@ import json
 import requests
 from typing import Dict, Any
 from dotenv import load_dotenv
-from google_services.google_api import get_calendar_service, get_gmail_service
 
+from google_services.google_api import get_calendar_service, get_gmail_service
 from google_services.calendar import CalendarService
 from ai.contexts.main_agent_systemPrompt import response_json_format
 from ai.contexts.main_agent_systemPrompt import query_intent_action_systemPrompt
@@ -86,5 +86,11 @@ class OllamaAssistant:
         calendar = CalendarService()
         request = calendar.handle_calendar_request(intent)
 
-        ai_response = self.chat_response(response_json_format, request["event"])
-        return {"intent": intent, "ai_response": ai_response}
+        if intent['intent'] == "calendar":
+            ai_response = self.chat_response(response_json_format, request["event"])
+            return { "intent": intent, "ai_response": ai_response }
+        elif intent['intent'] == "email":
+            # Handle email intent
+            pass
+        elif intent['intent'] == "general":
+            return { "intent": intent, "ai_response": self.chat_response(response_json_format, intent) }

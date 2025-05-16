@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from google_services.google_api import get_calendar_service
+from typing import Dict, List, Any, Optional
 
+from google_services.google_api import get_calendar_service
 
 class CalendarService:
     def __init__(self):
@@ -11,11 +11,9 @@ class CalendarService:
                      description: str = None, location: str = None, attendees: List[str] = None,
                      timezone: str = 'UTC+2') -> Dict[str, Any]:
 
-        # Controleer op conflicten
-        existing_events = self.get_events(time_min=start_time, time_max=end_time)
-        if existing_events:
-            event_summaries = ", ".join([event['summary'] for event in existing_events])
-            raise Exception(f"Error: er staat al iets gepland op dat tijdstip: {event_summaries}")
+        check_availability = self.get_events_in_time_slot(start_time, duration=1)
+        if check_availability:
+            raise Exception(f"Error: er staat al iets gepland op dat tijdstip: {check_availability}")
         
         event = {
             'summary': summary,
@@ -102,6 +100,20 @@ class CalendarService:
         except Exception as e:
             raise Exception(f"Failed to fetch calendar list: {str(e)}")
 
+    def get_events_in_time_slot(self, start_time: datetime, duration: Optional[int] = 1) -> List[str]:
+        """
+        Get the names of events planned in the given time slot.
+
+        :param start_time: The start time of the desired slot.
+        :param duration: The duration of the slot in hours (default is 1 hour).
+        :return: A list of event names (summaries) planned in the time slot.
+        """
+
+        end_time = start_time + timedelta(hours=duration)
+        existing_events = self.get_events(time_min=start_time, time_max=end_time)
+
+        return [event['summary'] for event in existing_events if 'summary' in event]
+
     def handle_calendar_request(self, intent: Dict[str, str]) -> Dict[str, Any]:
         if intent["action"] == "create_calendar_event":
             try:
@@ -117,6 +129,8 @@ class CalendarService:
             except Exception as e:
                 print(f"Error creating event: {str(e)}")
                 return {"status": "error", "message": str(e)}
+
+        return {"status": "error", "message": "Unsupported action"}
 
 
 #    calendar2 = CalendarService()
